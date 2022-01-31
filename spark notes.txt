@@ -1,0 +1,101 @@
+1.how to come out of spark-shell ?
+type :   you press Ctrl+D or type in :q
+
+2. How to use python in cloudera and get out of it?
+type "pyspark"
+to get out : Use quit() to exit the console.
+
+3. how to check whether demons are running?
+type sudo jps in putty.
+
+4. to see hadoop web UI.
+type localhost:50070 in your virtual machine browser.
+
+5.spark dataframe : its the distributed collection of data.
+it supports varoious source of data and it supports strauctured and unsructured data
+along with schema.
+
+6.The Architecture of a Spark Application
+Below are the high-level components of the architecture of the Apache Spark application:
+
+The Spark driver
+The driver is the process “in the driver seat” of your Spark Application. It is the controller of the execution of a Spark Application and maintains all of the states of the Spark cluster (the state and tasks of the executors). It must interface with the cluster manager in order to actually get physical resources and launch executors.
+
+At the end of the day, this is just a process on a physical machine that is responsible for maintaining the state of the application running on the cluster.
+
+ 
+
+The Spark executors
+Spark executors are the processes that perform the tasks assigned by the Spark driver. Executors have one core responsibility: take the tasks assigned by the driver, run them, and report back their state (success or failure) and results. Each Spark Application has its own separate executor processes.
+
+ 
+
+The cluster manager
+The Spark Driver and Executors do not exist in a void, and this is where the cluster manager comes in. The cluster manager is responsible for maintaining a cluster of machines that will run your Spark Application(s). Somewhat confusingly, a cluster manager will have its own “driver” (sometimes called master) and “worker” abstractions.
+
+The core difference is that these are tied to physical machines rather than processes (as they are in Spark). The machine on the left of the illustration is the Cluster Manager Driver Node. The circles represent daemon processes running on and managing each of the individual worker nodes. There is no Spark Application running as of yet—these are just the processes from the cluster manager.
+
+When the time comes to actually run a Spark Application, we request resources from the cluster manager to run it. Depending on how our application is configured, this can include a place to run the Spark driver or might be just resources for the executors for our Spark Application. Over the course of Spark Application execution, the cluster manager will be responsible for managing the underlying machines that our application is running on.
+
+There are several useful things to note about this architecture:
+ 
+
+Each application gets its own executor processes, which stay up for the duration of the whole application and run tasks in multiple threads.This has the benefit of isolating applications from each other, on both the scheduling side (each driver schedules its own tasks) and executor side (tasks from different applications run in different JVMs).
+However, it also means that data cannot be shared across different Spark applications (instances of SparkContext) without writing it to an external storage system.
+Spark is agnostic to the underlying cluster manager. As long as it can acquire executor processes, and these communicate with each other, it is relatively easy to run it even on a cluster manager that also supports other applications (e.g. Mesos/YARN).
+The driver program must listen for and accept incoming connections from its executors throughout its lifetime (e.g., see spark.driver.port in the network config section). As such, the driver program must be network addressable from the worker nodes.
+Because the driver schedules tasks on the cluster, it should be run close to the worker nodes, preferably on the same local area network. If you’d like to send requests to the cluster remotely, it’s better to open an RPC to the driver and have it submit operations from nearby than to run a driver far away from the worker nodes.
+ 
+
+7.Cluster Manager Types
+=============================
+The system currently supports several cluster managers:
+
+Standalone – a simple cluster manager included with Spark that makes it easy to set up a cluster.
+Apache Mesos – a general cluster manager that can also run Hadoop MapReduce and service applications.
+Hadoop YARN – the resource manager in Hadoop 2.
+Kubernetes – an open-source system for automating deployment, scaling, and management of containerized applications.
+A third-party project (not supported by the Spark project) exists to add support for Nomad as a cluster manager.
+
+ 
+
+8.Execution Modes
+======================
+An execution mode gives you the power to determine where the aforementioned resources are physically located when you go running your application. You have three modes to choose from:
+
+Cluster mode
+Client mode
+Local mode
+Cluster mode
+Cluster mode is probably the most common way of running Spark Applications. In cluster mode, a user submits a pre-compiled JAR, Python script, or R script to a cluster manager. The cluster manager then launches the driver process on a worker node inside the cluster, in addition to the executor processes. This means that the cluster manager is responsible for maintaining all Spark Application– related processes.
+
+Client mode
+Client mode is nearly the same as cluster mode except that the Spark driver remains on the client machine that submitted the application. This means that the client machine is responsible for maintaining the Spark driver process, and the cluster manager maintains the executor processes. These machines are commonly referred to as gateway machines or edge nodes.
+
+Local mode
+Local mode is a significant departure from the previous two modes: it runs the entire Spark Application on a single machine. It achieves parallelism through threads on that single machine. This is a common way to learn Spark, to test your applications, or experiment iteratively with local development.
+
+However, we do not recommend using local mode for running production applications.
+
+
+To sum up, Spark helps us break down the intensive and high-computational jobs into smaller, more concise tasks which are then executed by the worker nodes. It also achieves the processing of real-time or archived data using its basic architecture.
+
+I recommend you go through the following data engineering resources to enhance your knowledge-
+
+Getting Started with Apache Hive – A Must Know Tool For all Big Data and Data Engineering Professionals
+
+Spark Application UI: http://localhost:4040/
+Resource Manager: http://localhost:9870
+Spark JobTracker: http://localhost:8088/
+Node Specific Info: http://localhost:8042/
+
+
+9.what fucntionality we have used in spark?
+in memory processing.
+integration of components": we have used spaek sql, spark streaming, graphX.
+lazy evolution
+
+10.we generally use hadoop yarn cluster for spark,..other cluster we can use are
+apache mesos ,if you dont have cluster manager , the spark has its own cluster 
+manager called "standalone cluster"
+
